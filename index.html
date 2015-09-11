@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Search App</title>
+</head>
+<body ng-app="SearchApp">
+
+  <div class="main-container">
+    <div class="search-container" ng-controller="SearchController">
+      <input class="search-field" type="text" />
+      <ul class="search-history">
+        <li ng-repeat="entry in recentSearchEntries" ng-bind="entry"></li>
+      </ul>
+    </div>
+    <div class="result-container" ng-controller="ResultController">
+      <ul class="result-list">
+        <li class="result-item" ng-repeat="item in resultItems">
+          <a ng-href="{{item.link}}">
+            <img ng-src="{{item.images.low_resolution.url}}">
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+</body>
+
+<!-- <script src="dist/search-app.min.js"></script> -->
+
+<script src="src/vendor/angular.js"></script>
+<script src="src/vendor/angular-cookies.js"></script>
+<script src="src/vendor/angular-oauth2.js"></script>
+
+<script src="src/app/init.js"></script>
+<script src="src/app/search/SearchController.js"></script>
+<script src="src/app/result/ResultController.js"></script>
+
+</html>

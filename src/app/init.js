@@ -1,0 +1,1 @@
+angular.module('SearchApp', ['angular-oauth2']);
