@@ -1,0 +1,1 @@
+angular.module("SearchApp",[]),angular.module("SearchApp").controller("ResultController",["$scope",function(a){a.resultItems=[]}]),angular.module("SearchApp").controller("SearchController",["$scope",function(a){a.recentSearchEntries=["Search 1","Search 2"]}]);
