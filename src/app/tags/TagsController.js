@@ -5,10 +5,11 @@ angular.module('SearchApp')
   $scope.tags = [];
 
   appService.handleResponse(RESPONSE_NAME.TAGS, function(data) {
+    $scope.activeIndex = -1;
     $scope.tags = data;
   });
 
-  $scope.selectTag = function(tag) {
+  $scope.selectTag = function(tag, index) {
     if (!tag) {
       $log.debug('Selected empty tag');
       return;
@@ -18,7 +19,10 @@ angular.module('SearchApp')
 
     $scope.isLoading = true;
 
-    appService.selectTag(tag).finally(function() {
+    appService.selectTag(tag).then(function() {
+      $scope.activeIndex = index;
+    })
+    .finally(function() {
       $scope.isLoading = false;
     });
   };

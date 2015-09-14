@@ -12,7 +12,8 @@ angular.module('SearchApp')
   var executeCallback = function(eventName, response) {
     var eventCallback = events[eventName];
     if (eventCallback) {
-      eventCallback(response.data.data);
+      var data = response ? response.data.data : [];
+      eventCallback(data);
     }
   };
 
@@ -21,6 +22,7 @@ angular.module('SearchApp')
     promise.then(function(response) {
       $log.debug('Got tags for', query, response);
       executeCallback(RESPONSE_NAME.TAGS, response);
+      executeCallback(RESPONSE_NAME.IMAGES);
     });
     return promise;
   };

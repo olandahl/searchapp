@@ -1,8 +1,8 @@
 angular.module("SearchApp", []);
 
-angular.module("SearchApp").controller("ImagesController", [ "$scope", "appService", "EVENT_NAME", function($scope, appService, EVENT_NAME) {
+angular.module("SearchApp").controller("ImagesController", [ "$scope", "appService", "RESPONSE_NAME", function($scope, appService, RESPONSE_NAME) {
     $scope.images = [];
-    appService.subscribe(EVENT_NAME.IMAGES, function(data) {
+    appService.handleResponse(RESPONSE_NAME.IMAGES, function(data) {
         $scope.images = data;
     });
 } ]);
@@ -25,22 +25,24 @@ angular.module("SearchApp").controller("SearchController", [ "$log", "$scope", "
     };
 } ]);
 
-angular.module("SearchApp").constant("EVENT_NAME", {
+angular.module("SearchApp").constant("RESPONSE_NAME", {
     TAGS: "TAGS",
     IMAGES: "IMAGES"
-}).factory("appService", [ "$log", "instagramService", "cacheService", "EVENT_NAME", function($log, instagramService, cacheService, EVENT_NAME) {
+}).factory("appService", [ "$log", "instagramService", "cacheService", "RESPONSE_NAME", function($log, instagramService, cacheService, RESPONSE_NAME) {
     var events = {};
     var executeCallback = function(eventName, response) {
         var eventCallback = events[eventName];
         if (eventCallback) {
-            eventCallback(response.data.data);
+            var data = response ? response.data.data : [];
+            eventCallback(data);
         }
     };
     var search = function(query) {
         var promise = instagramService.searchTags(query);
         promise.then(function(response) {
             $log.debug("Got tags for", query, response);
-            executeCallback(EVENT_NAME.TAGS, response);
+            executeCallback(RESPONSE_NAME.TAGS, response);
+            executeCallback(RESPONSE_NAME.IMAGES);
         });
         return promise;
     };
@@ -48,17 +50,17 @@ angular.module("SearchApp").constant("EVENT_NAME", {
         var promise = instagramService.getMedia(tag);
         promise.then(function(response) {
             $log.debug("Got images for", tag, response);
-            executeCallback(EVENT_NAME.IMAGES, response);
+            executeCallback(RESPONSE_NAME.IMAGES, response);
         });
         return promise;
     };
-    var subscribe = function(eventName, callback) {
+    var handleResponse = function(eventName, callback) {
         events[eventName] = callback;
     };
     return {
         search: search,
         selectTag: selectTag,
-        subscribe: subscribe
+        handleResponse: handleResponse
     };
 } ]);
 
@@ -97,19 +99,22 @@ angular.module("SearchApp").constant("INSTAGRAM_API", {
     };
 } ]);
 
-angular.module("SearchApp").controller("TagsController", [ "$log", "$scope", "appService", "EVENT_NAME", function($log, $scope, appService, EVENT_NAME) {
+angular.module("SearchApp").controller("TagsController", [ "$log", "$scope", "appService", "RESPONSE_NAME", function($log, $scope, appService, RESPONSE_NAME) {
     $scope.tags = [];
-    appService.subscribe(EVENT_NAME.TAGS, function(data) {
+    appService.handleResponse(RESPONSE_NAME.TAGS, function(data) {
+        $scope.activeIndex = -1;
         $scope.tags = data;
     });
-    $scope.selectTag = function(tag) {
+    $scope.selectTag = function(tag, index) {
         if (!tag) {
             $log.debug("Selected empty tag");
             return;
         }
         $log.debug("Selected tag", tag);
         $scope.isLoading = true;
-        appService.selectTag(tag).finally(function() {
+        appService.selectTag(tag).then(function() {
+            $scope.activeIndex = index;
+        }).finally(function() {
             $scope.isLoading = false;
         });
     };
