@@ -24,9 +24,9 @@ module.exports = function(grunt) {
       dev: {
         options: {
           // Uncomment rows below to prevent minification
-          // mangle: false,
-          // compress: false,
-          // beautify: true
+          mangle: false,
+          compress: false,
+          beautify: true
         },
         src: ['<%= src_js %>', '!<%= src_spec %>'], // Include all js except unit test specs
         dest: '<%= build_js %>'   // Place the result in the destination js file
@@ -40,14 +40,14 @@ module.exports = function(grunt) {
         configFile: 'test/karma.conf.js',
         background: true,
         runnerPort: 9999,
-        logLevel: 'DEBUG'
+        logLevel: 'INFO'
       },
       single: {
         // Used to run tests one time and end process
         configFile: 'test/karma.conf.js',
         runnerPort: 9999,
         singleRun: true,
-        logLevel: 'DEBUG'
+        logLevel: 'INFO'
       }
     },
 

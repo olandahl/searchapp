@@ -3,36 +3,45 @@
 <head>
   <title>Search App</title>
 </head>
-<body ng-app="SearchApp">
+<body ng-app="SearchApp" ng-cloak>
 
   <div class="main-container">
     <div class="search-container" ng-controller="SearchController">
-      <input class="search-field" type="text" />
+      <form ng-submit='search(query)'>
+        <input class="search-field" type="text" ng-model="query" />
+      </form>
       <ul class="search-history">
-        <li ng-repeat="entry in recentSearchEntries" ng-bind="entry"></li>
-      </ul>
-    </div>
-    <div class="result-container" ng-controller="ResultController">
-      <ul class="result-list">
-        <li class="result-item" ng-repeat="item in resultItems">
-          <a ng-href="{{item.link}}">
-            <img ng-src="{{item.images.low_resolution.url}}">
-          </a>
+        <li ng-repeat="entry in recentSearchEntries track by $index">
+          <a href="" ng-click="search(entry)" ng-bind="entry"></a>
         </li>
       </ul>
+      <div ng-show="isLoading">loading...</div>
+    </div>
+    <div class="result-container" ng-controller="ResultController">
+      <div class="tags-container">
+        <ul class="tags-list">
+          <li class="tags-item" ng-repeat="item in $root.resultItems">
+            <a href="" ng-click="showImages(item.name)" ng-bind="item.name"></a>
+          </li>
+        </ul>
+      </div>
+      <div ng-show="isLoading">loading...</div>
+      <div class="images-container">
+        <ul class="images-list">
+          <li class="images-item" ng-repeat="item in images">
+            <a ng-href="{{item.link}}" target="_blank">
+              <img ng-src="{{item.images.thumbnail.url}}">
+            </a>
+          </li>
+        </ul>
+        <div ng-show="isLoading">loading...</div>
+      </div>
     </div>
   </div>
 
 </body>
 
-<!-- <script src="dist/search-app.min.js"></script> -->
-
 <script src="src/vendor/angular.js"></script>
-<script src="src/vendor/angular-cookies.js"></script>
-<script src="src/vendor/angular-oauth2.js"></script>
-
-<script src="src/app/init.js"></script>
-<script src="src/app/search/SearchController.js"></script>
-<script src="src/app/result/ResultController.js"></script>
+<script src="dist/searchApp.js"></script>
 
 </html>

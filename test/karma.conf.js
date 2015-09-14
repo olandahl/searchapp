@@ -6,6 +6,7 @@ module.exports = function(config){
     // Include angular, scripts and templates
     files : [
       'src/vendor/angular.js',
+      'test/angular-mocks.min.js',
       'src/app/init.js',
       'src/app/**/*.js'
     ],
