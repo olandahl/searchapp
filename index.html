@@ -17,16 +17,16 @@
       </ul>
       <div ng-show="isLoading">loading...</div>
     </div>
-    <div class="result-container" ng-controller="ResultController">
-      <div class="tags-container">
+    <div class="result-container">
+      <div class="tags-container" ng-controller="TagsController">
         <ul class="tags-list">
-          <li class="tags-item" ng-repeat="item in $root.resultItems">
-            <a href="" ng-click="showImages(item.name)" ng-bind="item.name"></a>
+          <li class="tags-item" ng-repeat="item in tags">
+            <a href="" ng-click="selectTag(item.name)" ng-bind="item.name"></a>
           </li>
         </ul>
+        <div ng-show="isLoading">loading...</div>
       </div>
-      <div ng-show="isLoading">loading...</div>
-      <div class="images-container">
+      <div class="images-container" ng-controller="ImagesController">
         <ul class="images-list">
           <li class="images-item" ng-repeat="item in images">
             <a ng-href="{{item.link}}" target="_blank">
@@ -34,14 +34,13 @@
             </a>
           </li>
         </ul>
-        <div ng-show="isLoading">loading...</div>
       </div>
     </div>
   </div>
 
 </body>
 
-<script src="src/vendor/angular.js"></script>
+<script src="src/vendor/angular.min.js"></script>
 <script src="dist/searchApp.js"></script>
 
 </html>

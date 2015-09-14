@@ -1,24 +1,13 @@
 angular.module("SearchApp", []);
 
-angular.module("SearchApp").controller("ResultController", [ "$log", "$scope", "instagramService", function($log, $scope, instagramService) {
-    $scope.showImages = function(tag) {
-        if (!tag) {
-            $log.debug("Empty tag");
-            return;
-        }
-        $log.debug("Get media for tag", tag);
-        $scope.isLoading = true;
-        $scope.images = [];
-        instagramService.getMedia(tag).then(function(response) {
-            $log.debug("Got media for", tag, response);
-            $scope.images = response.data.data;
-        }).finally(function() {
-            $scope.isLoading = false;
-        });
-    };
+angular.module("SearchApp").controller("ImagesController", [ "$scope", "appService", "EVENT_NAME", function($scope, appService, EVENT_NAME) {
+    $scope.images = [];
+    appService.subscribe(EVENT_NAME.IMAGES, function(data) {
+        $scope.images = data;
+    });
 } ]);
 
-angular.module("SearchApp").controller("SearchController", [ "$log", "$rootScope", "$scope", "cacheService", "instagramService", function($log, $rootScope, $scope, cacheService, instagramService) {
+angular.module("SearchApp").controller("SearchController", [ "$log", "$scope", "appService", "cacheService", function($log, $scope, appService, cacheService) {
     $scope.recentSearchEntries = cacheService.getRecentSearchEntries();
     $scope.search = function(query) {
         if (!query) {
@@ -27,14 +16,49 @@ angular.module("SearchApp").controller("SearchController", [ "$log", "$rootScope
         }
         $log.debug("Search tags", query);
         $scope.isLoading = true;
-        instagramService.searchTags(query).then(function(response) {
-            $log.debug("Got tags for", query, response);
+        appService.search(query).then(function() {
             $scope.query = null;
-            $rootScope.resultItems = response.data.data;
             $scope.recentSearchEntries = cacheService.addSearchEntry(query);
         }).finally(function() {
             $scope.isLoading = false;
         });
+    };
+} ]);
+
+angular.module("SearchApp").constant("EVENT_NAME", {
+    TAGS: "TAGS",
+    IMAGES: "IMAGES"
+}).factory("appService", [ "$log", "instagramService", "cacheService", "EVENT_NAME", function($log, instagramService, cacheService, EVENT_NAME) {
+    var events = {};
+    var executeCallback = function(eventName, response) {
+        var eventCallback = events[eventName];
+        if (eventCallback) {
+            eventCallback(response.data.data);
+        }
+    };
+    var search = function(query) {
+        var promise = instagramService.searchTags(query);
+        promise.then(function(response) {
+            $log.debug("Got tags for", query, response);
+            executeCallback(EVENT_NAME.TAGS, response);
+        });
+        return promise;
+    };
+    var selectTag = function(tag) {
+        var promise = instagramService.getMedia(tag);
+        promise.then(function(response) {
+            $log.debug("Got images for", tag, response);
+            executeCallback(EVENT_NAME.IMAGES, response);
+        });
+        return promise;
+    };
+    var subscribe = function(eventName, callback) {
+        events[eventName] = callback;
+    };
+    return {
+        search: search,
+        selectTag: selectTag,
+        subscribe: subscribe
     };
 } ]);
 
@@ -70,5 +94,23 @@ angular.module("SearchApp").constant("INSTAGRAM_API", {
         getMedia: function(tag) {
             return $http.jsonp(INSTAGRAM_API.BASE_PATH + tag + "/media/recent" + INSTAGRAM_API.PARAMS);
         }
+    };
+} ]);
+
+angular.module("SearchApp").controller("TagsController", [ "$log", "$scope", "appService", "EVENT_NAME", function($log, $scope, appService, EVENT_NAME) {
+    $scope.tags = [];
+    appService.subscribe(EVENT_NAME.TAGS, function(data) {
+        $scope.tags = data;
+    });
+    $scope.selectTag = function(tag) {
+        if (!tag) {
+            $log.debug("Selected empty tag");
+            return;
+        }
+        $log.debug("Selected tag", tag);
+        $scope.isLoading = true;
+        appService.selectTag(tag).finally(function() {
+            $scope.isLoading = false;
+        });
     };
 } ]);

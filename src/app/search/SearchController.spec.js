@@ -1,16 +1,15 @@
 describe('SearchController', function() {
 
-  var $controller, $window, $rootScope, $scope, $httpBackend, INSTAGRAM_API, SEARCH_CACHE_ID;
+  var $controller, $window, $scope, $httpBackend, INSTAGRAM_API, SEARCH_CACHE_ID;
 
   beforeEach(module('SearchApp'));
 
-  beforeEach(inject(function(_$controller_, _$window_, _$rootScope_, _$httpBackend_, _INSTAGRAM_API_, _SEARCH_CACHE_ID_) {
+  beforeEach(inject(function(_$controller_, _$window_, _$httpBackend_, _INSTAGRAM_API_, _SEARCH_CACHE_ID_) {
     $window = _$window_;
     $httpBackend = _$httpBackend_;
+    $controller = _$controller_;
     INSTAGRAM_API = _INSTAGRAM_API_;
     SEARCH_CACHE_ID = _SEARCH_CACHE_ID_;
-    $rootScope = _$rootScope_;
-    $controller = _$controller_;
   }));
 
 
@@ -20,7 +19,7 @@ describe('SearchController', function() {
 
     beforeEach(function() {
       $window.sessionStorage.setItem(SEARCH_CACHE_ID, JSON.stringify(TEST_ENTRIES));
-      $scope = $rootScope.$new();
+      $scope = {};
       $controller('SearchController', { $scope: $scope });
     });
 
@@ -34,20 +33,14 @@ describe('SearchController', function() {
 
   describe('Searching for a tag', function() {
 
-    var TEST_QUERY = 'angular',
-      TEST_RESPONSE = {
-        data: [
-          {name: 'angular'}, 
-          {name: 'angularjs'}
-        ]
-      };
+    var TEST_QUERY = 'angular';
 
     beforeEach(function() {
       $window.sessionStorage.setItem(SEARCH_CACHE_ID, "");
-      $scope = $rootScope.$new();
+      $scope = {};
       $controller('SearchController', { $scope: $scope });
 
-      $httpBackend.expect('JSONP', INSTAGRAM_API.BASE_PATH+'search/'+INSTAGRAM_API.PARAMS+'&q='+TEST_QUERY).respond(TEST_RESPONSE);
+      $httpBackend.expect('JSONP', INSTAGRAM_API.BASE_PATH+'search/'+INSTAGRAM_API.PARAMS+'&q='+TEST_QUERY).respond({data:[]});
       $scope.query = TEST_QUERY;
       $scope.search($scope.query);
       $httpBackend.flush();
@@ -58,17 +51,11 @@ describe('SearchController', function() {
       $httpBackend.verifyNoOutstandingRequest();
     });
 
-    it('Should show the resulting tags', function() {
-      expect($rootScope.resultItems.length).toBe(2);
-      expect($rootScope.resultItems[0].name).toBe('angular');
-      expect($rootScope.resultItems[1].name).toBe('angularjs');
-    });
-
     it('Should clear the query string', function() {
       expect($scope.query).toBeNull();
     });
 
-    it('Should updated the list of recent search entries', function() {
+    it('Should update the list of recent search entries', function() {
       expect($scope.recentSearchEntries.length).toBe(1);
       expect($scope.recentSearchEntries[0]).toBe(TEST_QUERY);
     });

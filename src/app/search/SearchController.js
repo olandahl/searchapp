@@ -1,4 +1,6 @@
-angular.module('SearchApp').controller('SearchController', ['$log', '$rootScope', '$scope', 'cacheService', 'instagramService', function($log, $rootScope, $scope, cacheService, instagramService) {
+angular.module('SearchApp')
+
+.controller('SearchController', ['$log', '$scope', 'appService', 'cacheService', function($log, $scope, appService, cacheService) {
 
   $scope.recentSearchEntries = cacheService.getRecentSearchEntries();
 
@@ -12,10 +14,8 @@ angular.module('SearchApp').controller('SearchController', ['$log', '$rootScope'
 
     $scope.isLoading = true;
 
-    instagramService.searchTags(query).then(function(response) {
-      $log.debug('Got tags for', query, response);
+    appService.search(query).then(function() {
       $scope.query = null;
-      $rootScope.resultItems = response.data.data;
       $scope.recentSearchEntries = cacheService.addSearchEntry(query);
     }).finally(function() {
       $scope.isLoading = false;

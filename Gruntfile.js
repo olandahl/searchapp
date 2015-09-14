@@ -10,6 +10,7 @@ module.exports = function(grunt) {
     build_dir: './dist',
 
     // Globbing patterns for different file types
+    init_js: '<%= src_dir %>/app/init.js',   // The app init js files
     src_js: '<%= src_dir %>/app/**/*.js',   // All app js files
     src_spec: '<%= src_dir %>/**/*.spec.js',  // All unit test spec js files
     src_less: '<%= src_dir %>/**/*.less',   // All less files
@@ -28,7 +29,7 @@ module.exports = function(grunt) {
           compress: false,
           beautify: true
         },
-        src: ['<%= src_js %>', '!<%= src_spec %>'], // Include all js except unit test specs
+        src: ['<%= init_js %>', '<%= src_js %>', '!<%= src_spec %>'], // Include all js except unit test specs
         dest: '<%= build_js %>'   // Place the result in the destination js file
       }
     },
