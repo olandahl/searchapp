@@ -1,5 +1,5 @@
 
-# Intagram Search App
+# Instagram Search App
 A simple web application to search for instagram tags and images
 
 ## Prerequisites
