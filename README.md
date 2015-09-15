@@ -1,6 +1,6 @@
 
 # Intagram Search App
-A simple web application to serach for instagram tags and images
+A simple web application to search for instagram tags and images
 
 ## Prerequisites
 - Install NodeJS (https://nodejs.org/)
