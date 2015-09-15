@@ -27,7 +27,7 @@
       <div class="tags-container" ng-controller="TagsController" ng-show="tagFavorites.length > 0 || tags.length > 0">
         <h3>Tags</h3>
         <ul class="tags-list">
-          <li class="tags-item" ng-class="{active: item.isActive}" ng-repeat="item in tagFavorites" ng-show="tagFavorites.length > 0">
+          <li class="tags-item" ng-class="{active: item.isActive}" ng-repeat="item in tagFavorites track by $index" ng-show="tagFavorites.length > 0">
             <a href="" ng-click="selectTag(item)" ng-bind="item.name"></a>
           </li>
         </ul>
