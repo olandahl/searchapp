@@ -1,3 +1,4 @@
+
 # Intagram Search App
 A simple web application to serach for instagram tags and images
 
@@ -8,8 +9,8 @@ A simple web application to serach for instagram tags and images
 
 ## Run app
 - npm start
-- http://localhost:8000
+- [http://localhost:8000](http://localhost:8000)
 
 ## Run tests
 - npm test
-- http://localhost:8000/test/coverage
+- [http://localhost:8000/test/coverage](http://localhost:8000/test/coverage)
