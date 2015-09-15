@@ -1,6 +1,6 @@
 // Init app
 angular.module('InstagramSearchApp', [])
 
-.config(function($logProvider){
+.config(['$logProvider', function($logProvider){
   $logProvider.debugEnabled(false);
-});
+}]);
