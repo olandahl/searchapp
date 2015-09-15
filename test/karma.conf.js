@@ -37,7 +37,8 @@ module.exports = function(config){
     // Optionally, configure the reporter
     coverageReporter: {
       type : 'html',
-      dir : 'test/coverage/'
+      dir : 'test/coverage/',
+      subdir: '.'
     }
 
   });
