@@ -1,28 +1,52 @@
 angular.module('InstagramSearchApp')
 
-// Cache identifier for recent search entries
-.constant('SEARCH_CACHE_ID', 'InstagramSearchAppCache')
+// Cache identifiers
+.constant('CACHE_ID', {
+  RECENT_ENTRIES: 'InstagramSearchAppCache_RecentEntries',
+  FAVORITE_TAGS: 'InstagramSearchAppCache_FavoriteTags'
+})
 
-// The cache service is responsible for caching recent search entries
-.factory('cacheService', ['$window', '$http', 'SEARCH_CACHE_ID', function($window, $http, SEARCH_CACHE_ID) {
+// The sessionCache service is responsible for caching recent search entries
+.factory('cacheService', ['$window', '$http', 'CACHE_ID', function($window, $http, CACHE_ID) {
 
   // The maximum number of recent entries
   var MAX_NO_OF_ENTRIES = 10;
 
   // Use browser session storage if available
   // Fallback to local object (will be reset on page reload) 
-  var cache = $window.sessionStorage || {};
+  var sessionCache = $window.sessionStorage || {},
+    localCache = $window.localStorage || {};
 
   // Get deserialized entries from cache
-  var getSearchEntries = function() {
-    var data = cache.getItem(SEARCH_CACHE_ID);
+  var getDeserializedData = function(cache, id) {
+    var data = cache.getItem(id);
     return data ? JSON.parse(data) : [];
   };
 
-  // Set serialized entries in cache
+  // Set serialized data in cache
+  var setSerializedData = function(cache, id, data) {
+    var serializedData = JSON.stringify(data);
+    cache.setItem(id, serializedData);
+  };
+
+  // Get search entries from session cache
+  var getSearchEntries = function() {
+    return getDeserializedData(sessionCache, CACHE_ID.RECENT_ENTRIES);
+  };
+
+  // Get favorite tags from local cache
+  var getFavoriteTags = function() {
+    return getDeserializedData(localCache, CACHE_ID.FAVORITE_TAGS);
+  };
+
+  // Set search entries in session cache
   var setSearchEntries = function(entries) {
-    var data = JSON.stringify(entries);
-    cache.setItem(SEARCH_CACHE_ID, data);
+    setSerializedData(sessionCache, CACHE_ID.RECENT_ENTRIES, entries);
+  };
+
+  // Set favorite tags in local cache
+  var setFavoriteTags = function(favorites) {
+    setSerializedData(localCache, CACHE_ID.FAVORITE_TAGS, favorites);
   };
 
   // Add search entry to cache
@@ -48,9 +72,29 @@ angular.module('InstagramSearchApp')
       return entries;
   };
 
+  // Add favorite tag to cache
+  var addFavorite = function(tag) {
+      var favorites = getFavoriteTags();
+
+      // Add favorite to the list
+      favorites.push(tag);
+
+      if (favorites.length > MAX_NO_OF_ENTRIES) {
+        // Remove the first item
+        favorites.shift();
+      }
+
+      // Update cache
+      setFavoriteTags(favorites);
+
+      return favorites;
+  };
+
   return {
     getRecentSearchEntries: getSearchEntries,
-    addSearchEntry: addSearchEntry
+    addSearchEntry: addSearchEntry,
+    getFavoriteTags: getFavoriteTags,
+    addFavorite: addFavorite
   };
 
 }]);

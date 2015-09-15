@@ -25,9 +25,9 @@ module.exports = function(grunt) {
       dev: {
         options: {
           // Uncomment rows below to prevent minification
-          mangle: false,
-          compress: false,
-          beautify: true
+          // mangle: false,
+          // compress: false,
+          // beautify: true
         },
         src: ['<%= init_js %>', '<%= src_js %>', '!<%= src_spec %>'], // Include all js except unit test specs
         dest: '<%= build_js %>'   // Place the result in the destination js file

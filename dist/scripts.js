@@ -1,4 +1,6 @@
-angular.module("InstagramSearchApp", []);
+angular.module("InstagramSearchApp", []).config(function($logProvider) {
+    $logProvider.debugEnabled(false);
+});
 
 angular.module("InstagramSearchApp").controller("ImagesController", [ "$scope", "appService", "UPDATE_EVENT", function($scope, appService, UPDATE_EVENT) {
     $scope.images = [];
@@ -27,7 +29,7 @@ angular.module("InstagramSearchApp").controller("SearchController", [ "$log", "$
 angular.module("InstagramSearchApp").constant("UPDATE_EVENT", {
     TAGS: "TAGS",
     IMAGES: "IMAGES"
-}).factory("appService", [ "$log", "instagramService", "cacheService", "UPDATE_EVENT", function($log, instagramService, cacheService, UPDATE_EVENT) {
+}).factory("appService", [ "$log", "instagramService", "UPDATE_EVENT", function($log, instagramService, UPDATE_EVENT) {
     var eventHandlers = {};
     var executeEventHandler = function(eventName, response) {
         var eventCallback = eventHandlers[eventName];
@@ -65,16 +67,31 @@ angular.module("InstagramSearchApp").constant("UPDATE_EVENT", {
     };
 } ]);
 
-angular.module("InstagramSearchApp").constant("SEARCH_CACHE_ID", "InstagramSearchAppCache").factory("cacheService", [ "$window", "$http", "SEARCH_CACHE_ID", function($window, $http, SEARCH_CACHE_ID) {
+angular.module("InstagramSearchApp").constant("CACHE_ID", {
+    RECENT_ENTRIES: "InstagramSearchAppCache_RecentEntries",
+    FAVORITE_TAGS: "InstagramSearchAppCache_FavoriteTags"
+}).factory("cacheService", [ "$window", "$http", "CACHE_ID", function($window, $http, CACHE_ID) {
     var MAX_NO_OF_ENTRIES = 10;
-    var cache = $window.sessionStorage || {};
-    var getSearchEntries = function() {
-        var data = cache.getItem(SEARCH_CACHE_ID);
+    var sessionCache = $window.sessionStorage || {}, localCache = $window.localStorage || {};
+    var getDeserializedData = function(cache, id) {
+        var data = cache.getItem(id);
         return data ? JSON.parse(data) : [];
     };
+    var setSerializedData = function(cache, id, data) {
+        var serializedData = JSON.stringify(data);
+        cache.setItem(id, serializedData);
+    };
+    var getSearchEntries = function() {
+        return getDeserializedData(sessionCache, CACHE_ID.RECENT_ENTRIES);
+    };
+    var getFavoriteTags = function() {
+        return getDeserializedData(localCache, CACHE_ID.FAVORITE_TAGS);
+    };
     var setSearchEntries = function(entries) {
-        var data = JSON.stringify(entries);
-        cache.setItem(SEARCH_CACHE_ID, data);
+        setSerializedData(sessionCache, CACHE_ID.RECENT_ENTRIES, entries);
+    };
+    var setFavoriteTags = function(favorites) {
+        setSerializedData(localCache, CACHE_ID.FAVORITE_TAGS, favorites);
     };
     var addSearchEntry = function(entry) {
         var entries = getSearchEntries();
@@ -88,9 +105,23 @@ angular.module("InstagramSearchApp").constant("SEARCH_CACHE_ID", "InstagramSearc
         setSearchEntries(entries);
         return entries;
     };
+    var addFavorite = function(tag) {
+        var favorites = getFavoriteTags();
+        if (favorites.indexOf(tag) >= 0) {
+            return favorites;
+        }
+        favorites.push(tag);
+        if (favorites.length > MAX_NO_OF_ENTRIES) {
+            favorites.shift();
+        }
+        setFavoriteTags(favorites);
+        return favorites;
+    };
     return {
         getRecentSearchEntries: getSearchEntries,
-        addSearchEntry: addSearchEntry
+        addSearchEntry: addSearchEntry,
+        getFavoriteTags: getFavoriteTags,
+        addFavorite: addFavorite
     };
 } ]);
 
@@ -108,22 +139,37 @@ angular.module("InstagramSearchApp").constant("INSTAGRAM_API", {
     };
 } ]);
 
-angular.module("InstagramSearchApp").controller("TagsController", [ "$log", "$scope", "appService", "UPDATE_EVENT", function($log, $scope, appService, UPDATE_EVENT) {
+angular.module("InstagramSearchApp").controller("TagsController", [ "$log", "$scope", "appService", "cacheService", "UPDATE_EVENT", function($log, $scope, appService, cacheService, UPDATE_EVENT) {
+    var activeTag = null, setActiveTag = function(tag) {
+        if (activeTag) {
+            activeTag.isActive = false;
+        }
+        if (tag) {
+            tag.isActive = true;
+            activeTag = tag;
+        }
+    };
     $scope.tags = [];
+    $scope.tagFavorites = cacheService.getFavoriteTags();
     appService.onUpdate(UPDATE_EVENT.TAGS, function(tags) {
-        $scope.activeIndex = -1;
+        setActiveTag();
         $scope.tags = tags;
     });
-    $scope.selectTag = function(tag, index) {
+    $scope.selectTag = function(tag) {
         if (!tag) {
             $log.debug("Selected empty tag");
             return;
         }
         $scope.isLoading = true;
-        appService.selectTag(tag).then(function() {
-            $scope.activeIndex = index;
+        appService.selectTag(tag.name).then(function() {
+            setActiveTag(tag);
         }).finally(function() {
             $scope.isLoading = false;
         });
+    };
+    $scope.addFavorite = function(tag) {
+        var favTag = angular.copy(tag);
+        favTag.isActive = false;
+        $scope.tagFavorites = cacheService.addFavorite(favTag);
     };
 } ]);

@@ -7,7 +7,7 @@ angular.module('InstagramSearchApp')
 })
 
 // The app service is the main application service that ties together controllers and other services
-.factory('appService', ['$log', 'instagramService', 'cacheService', 'UPDATE_EVENT', function($log, instagramService, cacheService, UPDATE_EVENT) {
+.factory('appService', ['$log', 'instagramService', 'UPDATE_EVENT', function($log, instagramService, UPDATE_EVENT) {
 
   // Store event handlers
   var eventHandlers = {};

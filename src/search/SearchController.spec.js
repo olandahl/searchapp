@@ -1,15 +1,15 @@
 describe('SearchController', function() {
 
-  var $controller, $window, $scope, $httpBackend, INSTAGRAM_API, SEARCH_CACHE_ID;
+  var $controller, $window, $scope, $httpBackend, INSTAGRAM_API, CACHE_ID;
 
   beforeEach(module('InstagramSearchApp'));
 
-  beforeEach(inject(function(_$controller_, _$window_, _$httpBackend_, _INSTAGRAM_API_, _SEARCH_CACHE_ID_) {
+  beforeEach(inject(function(_$controller_, _$window_, _$httpBackend_, _INSTAGRAM_API_, _CACHE_ID_) {
     $window = _$window_;
     $httpBackend = _$httpBackend_;
     $controller = _$controller_;
     INSTAGRAM_API = _INSTAGRAM_API_;
-    SEARCH_CACHE_ID = _SEARCH_CACHE_ID_;
+    CACHE_ID = _CACHE_ID_;
   }));
 
 
@@ -18,7 +18,7 @@ describe('SearchController', function() {
     var TEST_ENTRIES = ['query1','query2','query3'];
 
     beforeEach(function() {
-      $window.sessionStorage.setItem(SEARCH_CACHE_ID, JSON.stringify(TEST_ENTRIES));
+      $window.sessionStorage.setItem(CACHE_ID.RECENT_ENTRIES, JSON.stringify(TEST_ENTRIES));
       $scope = {};
       $controller('SearchController', { $scope: $scope });
     });
@@ -36,7 +36,7 @@ describe('SearchController', function() {
     var TEST_QUERY = 'angular';
 
     beforeEach(function() {
-      $window.sessionStorage.setItem(SEARCH_CACHE_ID, "");
+      $window.sessionStorage.setItem(CACHE_ID.RECENT_ENTRIES, "");
       $scope = {};
       $controller('SearchController', { $scope: $scope });
 

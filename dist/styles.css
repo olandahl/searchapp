@@ -46,18 +46,26 @@ a {
 a:hover {
   text-decoration: underline;
 }
+.main-container {
+  display: flex;
+}
 .search-container {
   float: left;
   width: 20%;
+  padding: 0 20px;
+  border-right: 1px solid #ccc;
 }
 .result-container {
   float: left;
   width: 80%;
+  padding: 0 20px;
 }
 
 .search-field {
   max-width: 100%;
   margin-bottom: 20px;
+  padding: 3px;
+  color: #333;
 }
 .history-list {
   margin-bottom: 20px;
@@ -81,4 +89,11 @@ a:hover {
 .tags-list .tags-item.active {
   font-weight: bold;
   padding: 5px 20px;
+}
+.tags-list .tags-item .tag-favorite {
+  color: green;
+  cursor: pointer;
+}
+.tags-list .tags-item .tag-favorite:hover {
+  color: yellowgreen;
 }
