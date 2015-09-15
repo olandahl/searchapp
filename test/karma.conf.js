@@ -5,10 +5,10 @@ module.exports = function(config){
 
     // Include angular, scripts and templates
     files : [
-      'src/vendor/angular.min.js',
+      'vendor/angular.min.js',
       'test/angular-mocks.min.js',
-      'src/app/init.js',
-      'src/app/**/*.js'
+      'src/init.js',
+      'src/**/*.js'
     ],
 
     frameworks: ['jasmine'],
@@ -31,7 +31,7 @@ module.exports = function(config){
     reporters: ['progress', 'coverage'],
 
     preprocessors: {
-      'src/app/**/*.js': ['coverage']
+      'src/**/*.js': ['coverage']
     },
 
     // Optionally, configure the reporter

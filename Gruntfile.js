@@ -16,8 +16,8 @@ module.exports = function(grunt) {
     src_less: '<%= src_dir %>/**/*.less',   // All less files
 
 
-    build_js: '<%= build_dir %>/searchApp.js',  // Destination js file, this is the concatenated, minified version of all js and html templates
-    build_css: '<%= build_dir %>/searchApp.css', // Destination css file, this is the compiled, concatenated, minifed version of all less files
+    build_js: '<%= build_dir %>/scripts.js',  // Destination js file, this is the concatenated, minified version of all js and html templates
+    build_css: '<%= build_dir %>/styles.css', // Destination css file, this is the compiled, concatenated, minifed version of all less files
 
 
     // Concatenate and minify javascripts
@@ -82,7 +82,7 @@ module.exports = function(grunt) {
 
       scripts: {
         files: ['<%= src_js %>', '!<%= src_spec %>'],
-        tasks: ['js']
+        tasks: ['uglify']
       },
 
       tests: {
@@ -93,14 +93,11 @@ module.exports = function(grunt) {
   });
 
 
-  // Run task when developing. Runs tasks when file changes.
-  grunt.registerTask('dev', ['karma:unit', 'watch']);
-
-  // Group js tasks together
-  grunt.registerTask('js', ['uglify']);
+  // Run tests
+  grunt.registerTask('test', ['karma:single']);
 
   // Build project
-  grunt.registerTask('build', ['js', 'karma:single', 'less']);
+  grunt.registerTask('build', ['uglify', 'test', 'less']);
 
   // Build and run local dev server by default
   grunt.registerTask('default', ['build']);

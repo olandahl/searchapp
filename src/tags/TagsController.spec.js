@@ -1,8 +1,8 @@
-describe('ImagesController', function() {
+describe('TagsController', function() {
 
   var $scope, $httpBackend, appService, INSTAGRAM_API;
 
-  beforeEach(module('SearchApp'));
+  beforeEach(module('InstagramSearchApp'));
 
   beforeEach(inject(function($controller, _$httpBackend_, _appService_, _INSTAGRAM_API_) {
     $httpBackend = _$httpBackend_;
@@ -10,23 +10,22 @@ describe('ImagesController', function() {
     INSTAGRAM_API = _INSTAGRAM_API_;
 
     $scope = {};
-    $controller('ImagesController', { $scope: $scope });
+    $controller('TagsController', { $scope: $scope });
   }));
 
   describe('Searching for a tag', function() {
 
-    var TEST_TAG = 'angular',
+    var TEST_QUERY = 'angular',
       TEST_RESPONSE = {
         data: [
-          {id: '123'}, 
-          {id: '456'},
-          {id: '789'}
+          {name: 'angular'}, 
+          {name: 'angularjs'}
         ]
       };
 
     beforeEach(function() {
-      $httpBackend.expect('JSONP', INSTAGRAM_API.BASE_PATH+TEST_TAG+'/media/recent'+INSTAGRAM_API.PARAMS).respond(TEST_RESPONSE);
-      appService.selectTag(TEST_TAG);
+      $httpBackend.expect('JSONP', INSTAGRAM_API.BASE_PATH+'search/'+INSTAGRAM_API.PARAMS+'&q='+TEST_QUERY).respond(TEST_RESPONSE);
+      appService.search(TEST_QUERY);
       $httpBackend.flush();
     });
 
@@ -36,8 +35,8 @@ describe('ImagesController', function() {
     });
 
     it('Should show the resulting images', function() {
-      expect($scope.images.length).toBe(3);
-      expect($scope.images).toEqual(TEST_RESPONSE.data);
+      expect($scope.tags.length).toBe(2);
+      expect($scope.tags).toEqual(TEST_RESPONSE.data);
     });
 
   });

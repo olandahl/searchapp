@@ -40,8 +40,11 @@ li {
   padding: 0;
   list-style: none;
 }
-h2 {
-  font-size: 20px;
+a {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
 }
 .search-container {
   float: left;

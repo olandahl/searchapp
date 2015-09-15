@@ -2,18 +2,18 @@
 <html>
 <head>
   <title>Search App</title>
-  <link rel="stylesheet" type="text/css" href="dist/searchApp.css">
+  <link rel="stylesheet" type="text/css" href="dist/styles.css">
 </head>
-<body ng-app="SearchApp" ng-cloak>
+<body ng-app="InstagramSearchApp" ng-cloak>
 
   <h1>Instagram Search App</h1>
   <div class="main-container">
     <div class="search-container" ng-controller="SearchController">
-      <h2>Search for tags</h2>
+      <h3>Search for tags</h3>
       <form ng-submit='search(query)'>
         <input class="search-field" name="search" type="text" placeholder="Type in query..." ng-model="query" />
       </form>
-      <h2>Recent searches</h2>
+      <h3>Recent searches</h3>
       <ul class="history-list">
         <li class="history-item" ng-repeat="entry in recentSearchEntries track by $index">
           <a href="" ng-click="search(entry)" ng-bind="entry"></a>
@@ -23,7 +23,7 @@
     </div>
     <div class="result-container">
       <div class="tags-container" ng-controller="TagsController" ng-show="tags.length > 0">
-        <h2>Tags</h2>
+        <h3>Tags</h3>
         <ul class="tags-list">
           <li class="tags-item" ng-class="{active: activeIndex === $index}" ng-repeat="item in tags">
             <a href="" ng-click="selectTag(item.name, $index)" ng-bind="item.name"></a>
@@ -32,7 +32,7 @@
         <div ng-show="isLoading">Fetching images...</div>
       </div>
       <div class="images-container" ng-controller="ImagesController" ng-show="images.length > 0">
-        <h2>Images</h2>
+        <h3>Images</h3>
         <ul class="images-list">
           <li class="images-item" ng-repeat="item in images">
             <a ng-href="{{item.link}}" target="_blank">
@@ -46,7 +46,7 @@
 
 </body>
 
-<script src="src/vendor/angular.min.js"></script>
-<script src="dist/searchApp.js"></script>
+<script src="vendor/angular.min.js"></script>
+<script src="dist/scripts.js"></script>
 
 </html>

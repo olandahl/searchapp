@@ -2,7 +2,7 @@ describe('SearchController', function() {
 
   var $controller, $window, $scope, $httpBackend, INSTAGRAM_API, SEARCH_CACHE_ID;
 
-  beforeEach(module('SearchApp'));
+  beforeEach(module('InstagramSearchApp'));
 
   beforeEach(inject(function(_$controller_, _$window_, _$httpBackend_, _INSTAGRAM_API_, _SEARCH_CACHE_ID_) {
     $window = _$window_;
