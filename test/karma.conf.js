@@ -18,14 +18,8 @@ module.exports = function(config){
     plugins : [
       'karma-phantomjs-launcher',
       'karma-jasmine',
-      'karma-super-dots-reporter',
       'karma-coverage'
     ],
-
-    junitReporter : {
-      outputFile: 'test_out/unit.xml',
-      suite: 'unit'
-    },
 
     // coverage reporter generates the coverage
     reporters: ['progress', 'coverage'],

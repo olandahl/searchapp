@@ -7,23 +7,10 @@
 
 
     // Predefined globals whom JSHint will ignore.
-    "browser"       : true,   // Standard browser globals e.g. `window`, `document`.
-
-    "node"          : false,
-    "rhino"         : false,
-    "couch"         : false,
-    "wsh"           : true,   // Windows Scripting Host.
-
-    "jquery"        : true,
-    "ender"         : true,
-    "prototypejs"   : false,
-    "mootools"      : false,
-    "dojo"          : false,
+    "browser"       : false,   // Standard browser globals e.g. `window`, `document`.
 
     "predef"        : [  // Custom globals.
-        //"exampleVar",
-        //"anotherCoolGlobal",
-        //"iLoveDouglas"
+        "angular"
     ],
 
 

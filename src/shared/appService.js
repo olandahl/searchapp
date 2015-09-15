@@ -16,7 +16,7 @@ angular.module('InstagramSearchApp')
   var executeEventHandler = function(eventName, response) {
     var eventCallback = eventHandlers[eventName];
     if (eventCallback) {
-      var hasData = response && response.data && response.data.data;
+      var hasData = response && response.data && response.data.data,
         data = hasData ? response.data.data : [];
       eventCallback(data);
     }

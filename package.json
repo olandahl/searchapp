@@ -21,11 +21,9 @@
     "grunt-contrib-less": "^1.0.1",
     "karma": "^0.13.9",
     "grunt-karma": "^0.12.1",
-    "karma-chrome-launcher": "^0.2.0",
     "jasmine-core": "^2.3.4",
     "karma-jasmine": "^0.3.6",
     "matchdep": "^0.3.0",
-    "karma-super-dots-reporter": "^0.1.0",
     "grunt-contrib-watch": "^0.6.1",
     "karma-phantomjs-launcher": "^0.2.1",
     "karma-coverage": "^0.5.2"

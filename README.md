@@ -4,7 +4,7 @@ A simple web application to search for instagram tags and images
 
 ## Prerequisites
 - Install NodeJS (https://nodejs.org/)
-- Install grunt CLI (npm install -g grunt-cli)
+- Install Grunt CLI (npm install -g grunt-cli)
 - Install dependencies (npm install)
 
 ## Run app
